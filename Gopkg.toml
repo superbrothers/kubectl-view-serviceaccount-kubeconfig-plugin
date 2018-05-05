@@ -1,0 +1,16 @@
+[[override]]
+  name = "k8s.io/client-go"
+  version = "7.0.0"
+
+[[constraint]]
+  name = "k8s.io/kubectl"
+  branch = "master"
+
+[[override]]
+  name = "k8s.io/apimachinery" 
+  branch = "release-1.10"
+
+[prune]
+  go-tests = true
+  unused-packages = true
+  non-go = true
