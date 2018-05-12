@@ -1,13 +1,35 @@
-VIEW_KUBECONFIG := view-kubeconfig
-ARCHIVE_FILE := view-kubeconfig.zip
+OUT_DIR ?= ./_out
+DIST_DIR ?= ./_dist
+$(shell mkdir -p _dist)
 
-$(VIEW_KUBECONFIG): main.go Gopkg.lock
-		@go build -o $@ .
+.PHONY: build
+build:
+		go build -o view-kubeconfig .
+
+.PHONY: cross
+build-cross: $(OUT_DIR)/linux-amd64/view-kubeconfig $(OUT_DIR)/darwin-amd64/view-kubeconfig
+
+.PHONY: dist
+dist: $(DIST_DIR)/view-kubeconfig-linux-amd64.zip $(DIST_DIR)/view-kubeconfig-darwin-amd64.zip
+
+.PHONY: checksum
+checksum:
+		for f in _dist/*.zip; do \
+			shasum -a 256 "$${f}"  | awk '{print $$1}' > "$${f}.sha256" ; \
+		done
 
 .PHONY: clean
 clean:
-		@$(RM) $(VIEW_KUBECONFIG) $(ARCHIVE_FILE)
+		rm -rf $(OUT_DIR) $(DIST_DIR) view-kubeconfig
 
-.PHONY: archive
-archive: $(VIEW_KUBECONFIG) LICENSE plugin.yaml
-		@zip -r $(ARCHIVE_FILE) $^
+$(OUT_DIR)/%-amd64/view-kubeconfig:
+		GOOS=$* GOARCH=amd64 go build -o $@ .
+
+$(DIST_DIR)/view-kubeconfig-%-amd64.zip: $(OUT_DIR)/%-amd64/view-kubeconfig
+		( \
+			cd $(OUT_DIR)/$*-amd64/ && \
+			cp ../../LICENSE . && \
+			cp ../../README.md . && \
+			cp ../../plugin.yaml . && \
+			zip -r ../../$@ * \
+		)
