@@ -20,12 +20,12 @@ Use "kubectl options" for a list of global command-line options (applies to all 
 
 ```
 $ curl -sLO https://github.com/superbrothers/kubectl-view-kubeconfig-plugin/releases/download/latest/view-kubeconfig.zip
-$ mkdir -p ~/.kube/plugin/view-kubeconfig
+$ mkdir -p ~/.kube/plugins/view-kubeconfig
 $ unzip view-kubeconfig.zip -d ~/.kube/plugins/view-kubeconfig
 Archive:  view-kubeconfig.zip
    creating: ~/.kube/plugins/view-kubeconfig/
   inflating: ~/.kube/plugins/view-kubeconfig/plugin.yaml
-  inflating: ~/.kube/plugins/view-kubeconfig/kill
+  inflating: ~/.kube/plugins/view-kubeconfig/view-kubeconfig
 ```
 
 ## License
