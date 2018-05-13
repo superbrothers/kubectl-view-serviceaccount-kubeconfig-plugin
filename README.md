@@ -18,8 +18,15 @@ Use "kubectl options" for a list of global command-line options (applies to all 
 
 ## Install the plugin
 
+If you are on macOS, you can install with homebrew:
 ```
-$ curl -sLO https://github.com/superbrothers/kubectl-view-kubeconfig-plugin/releases/download/latest/view-kubeconfig.zip
+$ brew tap superbrothers/kubectl-view-kubeconfig-plugin
+$ brew install kubectl-view-kubeconfig-plugin
+```
+
+If you are on Linux, you can install with the following steps:
+```
+$ curl -sLO https://github.com/superbrothers/kubectl-view-kubeconfig-plugin/releases/download/$(curl -sL https://raw.githubusercontent.com/superbrothers/kubectl-view-kubeconfig-plugin/master/version.txt)/view-kubeconfig-linux-amd64.zip
 $ mkdir -p ~/.kube/plugins/view-kubeconfig
 $ unzip view-kubeconfig.zip -d ~/.kube/plugins/view-kubeconfig
 Archive:  view-kubeconfig.zip
