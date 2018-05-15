@@ -7,8 +7,13 @@
   branch = "master"
 
 [[override]]
-  name = "k8s.io/apimachinery" 
+  name = "k8s.io/apimachinery"
   branch = "release-1.10"
+
+# vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:300:8: cannot use spt.Token (type func() adal.Token) as type adal.Token in field value
+[[override]]
+  name = "github.com/Azure/go-autorest"
+  version = "v9.9.0"
 
 [prune]
   go-tests = true
