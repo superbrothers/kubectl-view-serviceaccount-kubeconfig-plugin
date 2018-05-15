@@ -3474,7 +3474,6 @@ type ServiceAccount struct {
 	// +optional
 	// +patchMergeKey=name
 	// +patchStrategy=merge
-
 	Secrets []ObjectReference `json:"secrets,omitempty" patchStrategy:"merge" patchMergeKey:"name" protobuf:"bytes,2,rep,name=secrets"`
 
 	// ImagePullSecrets is a list of references to secrets in the same namespace to use for pulling any images
