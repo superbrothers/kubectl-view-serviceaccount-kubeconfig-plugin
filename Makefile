@@ -28,6 +28,7 @@ $(OUT_DIR)/%-amd64/view-kubeconfig:
 $(DIST_DIR)/view-kubeconfig-%-amd64.zip: $(OUT_DIR)/%-amd64/view-kubeconfig
 		( \
 			cd $(OUT_DIR)/$*-amd64/ && \
+			cp ../../version.txt . && \
 			cp ../../LICENSE . && \
 			cp ../../README.md . && \
 			cp ../../plugin.yaml . && \
