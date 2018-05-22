@@ -28,9 +28,10 @@ If you are on Linux, you can install with the following steps:
 ```
 $ curl -sLO https://github.com/superbrothers/kubectl-view-kubeconfig-plugin/releases/download/$(curl -sL https://raw.githubusercontent.com/superbrothers/kubectl-view-kubeconfig-plugin/master/version.txt)/view-kubeconfig-linux-amd64.zip
 $ mkdir -p ~/.kube/plugins/view-kubeconfig
-$ unzip view-kubeconfig.zip -d ~/.kube/plugins/view-kubeconfig
-Archive:  view-kubeconfig.zip
-   creating: ~/.kube/plugins/view-kubeconfig/
+$ unzip view-kubeconfig-linux-amd64.zip -d ~/.kube/plugins/view-kubeconfig
+Archive:  view-kubeconfig-linux-amd64.zip
+  inflating: ~/.kube/plugins/view-kubeconfig/LICENSE
+  inflating: ~/.kube/plugins/view-kubeconfig/README.md
   inflating: ~/.kube/plugins/view-kubeconfig/plugin.yaml
   inflating: ~/.kube/plugins/view-kubeconfig/view-kubeconfig
 ```
