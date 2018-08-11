@@ -23,7 +23,7 @@ func init() {
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatalf("Usage: kubectl plugin view-kubeconfig SERVICEACCOUNT")
+		log.Fatalf("Usage: kubectl plugin view-serviceaccount-kubeconfig SERVICEACCOUNT")
 	}
 
 	serviceaccountName := os.Args[1]

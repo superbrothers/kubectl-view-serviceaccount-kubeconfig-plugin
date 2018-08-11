@@ -1,4 +1,10 @@
-name: "view-kubeconfig"
+name: "view-serviceaccount-kubeconfig"
 shortDesc: "Show a kubeconfig setting to access the apiserver with a specified serviceaccount."
-example: "# Show a kubeconfig setting of serviceaccount/default\nkubectl plugin view-kubeconfig default"
-command: "./view-kubeconfig"
+longDesc: |
+  Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+
+  You can also use "view-sa-kubeconfig" as alias for this plugin.
+example: |
+  # Show a kubeconfig setting of serviceaccount/default
+  kubectl plugin view-serviceaccount-kubeconfig default
+command: "./view-serviceaccount-kubeconfig"
