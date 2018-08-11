@@ -1,17 +1,19 @@
-# kubectl plugin view-kubeconfig SERVICEACCOUNT
+# kubectl plugin view-serviceaccount-kubeconfig SERVICEACCOUNT
 
 kubectl plugin that show a kubeconfig to access the apiserver with a specified serviceaccount.
 
 ```
-$ kubectl plugin view-kubeconfig -h
+$ kubectl plugin view-serviceaccount-kubeconfig -h
 Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+
+You can also use "view-sa-kubeconfig" as alias for this plugin.
 
 Examples:
   # Show a kubeconfig setting of serviceaccount/default
-  kubectl plugin view-kubeconfig default
+  kubectl plugin view-serviceaccount-kubeconfig default
 
 Usage:
-  kubectl plugin view-kubeconfig [options]
+  kubectl plugin view-serviceaccount-kubeconfig [flags] [options]
 
 Use "kubectl options" for a list of global command-line options (applies to all commands).
 ```
@@ -20,20 +22,15 @@ Use "kubectl options" for a list of global command-line options (applies to all 
 
 If you are on macOS, you can install with homebrew:
 ```
-$ brew tap superbrothers/kubectl-view-kubeconfig-plugin
-$ brew install kubectl-view-kubeconfig-plugin
+$ brew tap superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
+$ brew install kubectl-view-serviceaccount-kubeconfig-plugin
 ```
 
 If you are on Linux, you can install with the following steps:
 ```
-$ curl -sLO https://github.com/superbrothers/kubectl-view-kubeconfig-plugin/releases/download/$(curl -sL https://raw.githubusercontent.com/superbrothers/kubectl-view-kubeconfig-plugin/master/version.txt)/view-kubeconfig-linux-amd64.zip
-$ mkdir -p ~/.kube/plugins/view-kubeconfig
-$ unzip view-kubeconfig-linux-amd64.zip -d ~/.kube/plugins/view-kubeconfig
-Archive:  view-kubeconfig-linux-amd64.zip
-  inflating: ~/.kube/plugins/view-kubeconfig/LICENSE
-  inflating: ~/.kube/plugins/view-kubeconfig/README.md
-  inflating: ~/.kube/plugins/view-kubeconfig/plugin.yaml
-  inflating: ~/.kube/plugins/view-kubeconfig/view-kubeconfig
+$ curl -sLO https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/$(curl -sL https://raw.githubusercontent.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/master/version.txt)/view-serviceaccount-kubeconfig-linux-amd64.zip
+$ mkdir -p ~/.kube/plugins/view-serviceaccount-kubeconfig
+$ unzip view-serviceaccount-kubeconfig-linux-amd64.zip -d ~/.kube/plugins/view-serviceaccount-kubeconfig
 ```
 
 ## License

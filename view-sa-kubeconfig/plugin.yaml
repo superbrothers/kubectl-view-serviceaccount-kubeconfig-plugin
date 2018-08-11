@@ -1,0 +1,8 @@
+name: "view-sa-kubeconfig"
+shortDesc: "An alias for view-serviceaccount-kubeconfig."
+longDesc: |
+  Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+
+  This command is an alias for view-serviceaccount-kubeconfig.
+  See 'kubectl plugin view-serviceaccount-kubeconfig -h'.
+command: "../view-serviceaccount-kubeconfig"
