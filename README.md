@@ -20,6 +20,11 @@ Use "kubectl options" for a list of global command-line options (applies to all 
 
 ## Install the plugin
 
+You can install this plugin with [krew](https://github.com/GoogleContainerTools/krew) that is package manager for kubectl plugins.
+```
+$ kubectl plugin install view-serviceaccount-kubeconfig
+```
+
 If you are on macOS, you can install with homebrew:
 ```
 $ brew tap superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
