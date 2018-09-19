@@ -4,8 +4,17 @@
 [[projects]]
   name = "cloud.google.com/go"
   packages = ["compute/metadata"]
-  revision = "056a55f54a6cc77b440b31a56a5e7c3982d32811"
-  version = "v0.22.0"
+  revision = "97efc2c9ffd9fe8ef47f7f3203dc60bbca547374"
+  version = "v0.28.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/Azure/go-ansiterm"
+  packages = [
+    ".",
+    "winterm"
+  ]
+  revision = "d6e3b3328b783f23731bc4d058875b0371ff8109"
 
 [[projects]]
   name = "github.com/Azure/go-autorest"
@@ -13,16 +22,54 @@
     "autorest",
     "autorest/adal",
     "autorest/azure",
-    "autorest/date"
+    "autorest/date",
+    "logger",
+    "version"
   ]
-  revision = "1f7cd6cfe0adea687ad44a512dfe76140f804318"
-  version = "v10.12.0"
+  revision = "a88c19ef2016e095f0b6c3b451074b4663f53bed"
+  version = "v10.15.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/MakeNowJust/heredoc"
+  packages = ["."]
+  revision = "e9091a26100e9cfb2b6a8f470085bfa541931a91"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
+
+[[projects]]
+  name = "github.com/docker/docker"
+  packages = [
+    "pkg/term",
+    "pkg/term/windows"
+  ]
+  revision = "092cba3727bb9b4a2f0e922cd6c0f93ea270e363"
+  version = "v1.13.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/docker/spdystream"
+  packages = [
+    ".",
+    "spdy"
+  ]
+  revision = "bc6354cbbc295e925e4c611ffe90c1f287ee54db"
+
+[[projects]]
+  name = "github.com/evanphx/json-patch"
+  packages = ["."]
+  revision = "72bf35d0ff611848c1dc9df0f976c81192392fa5"
+  version = "v4.1.0"
 
 [[projects]]
   name = "github.com/ghodss/yaml"
@@ -36,8 +83,8 @@
     "proto",
     "sortkeys"
   ]
-  revision = "1adfc126b41513cc696b209667c8656ea7aac67c"
-  version = "v1.0.0"
+  revision = "636bf0302bc95575d69441b25a2603156ffdddf1"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -54,14 +101,14 @@
     "ptypes/duration",
     "ptypes/timestamp"
   ]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/google/btree"
   packages = ["."]
-  revision = "e89373fe6b4a7413d7acd6da1725b83ef713e6e4"
+  revision = "4030bb1f1f0c35b30ca7009e9ebd06849dd45306"
 
 [[projects]]
   branch = "master"
@@ -76,8 +123,8 @@
     "compiler",
     "extensions"
   ]
-  revision = "ee43cbb60db7bd22502942cccbc39059117352ab"
-  version = "v0.1.0"
+  revision = "7c663266750e7d82587642f65e60bc4083f1f84e"
+  version = "v0.2.0"
 
 [[projects]]
   branch = "master"
@@ -91,7 +138,7 @@
     "openstack/utils",
     "pagination"
   ]
-  revision = "282f25e4025de0a42015d2e2b5faef1d920aad3c"
+  revision = "45f1c769265325fa6edae517f41dda5dcd34b325"
 
 [[projects]]
   branch = "master"
@@ -105,13 +152,26 @@
 [[projects]]
   name = "github.com/imdario/mergo"
   packages = ["."]
-  revision = "9d5f1277e9a8ed20c3684bda8fde67c05628518c"
-  version = "v0.3.4"
+  revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
+  version = "v0.3.6"
+
+[[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
 
 [[projects]]
   name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "f2b4162afba35581b6d4a50d3b8f34e33c144682"
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "v1.1.5"
+
+[[projects]]
+  name = "github.com/mitchellh/go-wordwrap"
+  packages = ["."]
+  revision = "9e67c67572bc5dd02aef930e2b0ae3c02a4b5a5c"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/modern-go/concurrent"
@@ -122,8 +182,8 @@
 [[projects]]
   name = "github.com/modern-go/reflect2"
   packages = ["."]
-  revision = "1df9eeb2bb81f327b96228865c5687bc2194af3f"
-  version = "1.0.0"
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
 
 [[projects]]
   branch = "master"
@@ -138,16 +198,33 @@
   version = "v2.0.1"
 
 [[projects]]
+  name = "github.com/russross/blackfriday"
+  packages = ["."]
+  revision = "300106c228d52c8941d4b3de6054a6062a86dda3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/sanitized_anchor_name"
+  packages = ["."]
+  revision = "86672fcb3f950f35f2e675df2240550f2a50762f"
+
+[[projects]]
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
+
+[[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
-  version = "v1.0.1"
+  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
+  version = "v1.0.2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "1f94bef427e370e425e55b172f3b5e300ef38304"
+  revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
 
 [[projects]]
   branch = "master"
@@ -158,10 +235,9 @@
     "http/httpguts",
     "http2",
     "http2/hpack",
-    "idna",
-    "lex/httplex"
+    "idna"
   ]
-  revision = "640f4622ab692b87c2f3a94265e6f579fe38263d"
+  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
 
 [[projects]]
   branch = "master"
@@ -173,7 +249,7 @@
     "jws",
     "jwt"
   ]
-  revision = "cdc340f7c179dbbfa4afd43b7614e8fcadde4269"
+  revision = "d2e6202438beef2727060aa7cabdd924d92ebfd9"
 
 [[projects]]
   branch = "master"
@@ -182,19 +258,25 @@
     "unix",
     "windows"
   ]
-  revision = "6f686a352de66814cdd080d970febae7767857a3"
+  revision = "ee1b12c67af419cf5a9be3bdbeea7fc1c5f32f11"
 
 [[projects]]
   name = "golang.org/x/text"
   packages = [
     "collate",
     "collate/build",
+    "encoding",
+    "encoding/internal",
+    "encoding/internal/identifier",
+    "encoding/unicode",
     "internal/colltab",
     "internal/gen",
     "internal/tag",
     "internal/triegen",
     "internal/ucd",
+    "internal/utf8internal",
     "language",
+    "runes",
     "secure/bidirule",
     "transform",
     "unicode/bidi",
@@ -225,8 +307,8 @@
     "internal/urlfetch",
     "urlfetch"
   ]
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
+  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
+  version = "v1.2.0"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -255,10 +337,12 @@
     "authorization/v1beta1",
     "autoscaling/v1",
     "autoscaling/v2beta1",
+    "autoscaling/v2beta2",
     "batch/v1",
     "batch/v1beta1",
     "batch/v2alpha1",
     "certificates/v1beta1",
+    "coordination/v1beta1",
     "core/v1",
     "events/v1beta1",
     "extensions/v1beta1",
@@ -274,10 +358,10 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "655e4e87cb5a855657ad325d1a615cf870870c9d"
+  revision = "f456898a08e4bbc5891694118f3819f324de12ff"
 
 [[projects]]
-  branch = "release-1.11"
+  branch = "release-1.12"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -285,6 +369,7 @@
     "pkg/api/resource",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
+    "pkg/apis/meta/v1/unstructured/unstructuredscheme",
     "pkg/apis/meta/v1beta1",
     "pkg/conversion",
     "pkg/conversion/queryparams",
@@ -303,20 +388,34 @@
     "pkg/util/clock",
     "pkg/util/errors",
     "pkg/util/framer",
+    "pkg/util/httpstream",
+    "pkg/util/httpstream/spdy",
     "pkg/util/intstr",
     "pkg/util/json",
+    "pkg/util/naming",
     "pkg/util/net",
+    "pkg/util/remotecommand",
     "pkg/util/runtime",
     "pkg/util/sets",
     "pkg/util/validation",
     "pkg/util/validation/field",
-    "pkg/util/wait",
     "pkg/util/yaml",
     "pkg/version",
     "pkg/watch",
+    "third_party/forked/golang/netutil",
     "third_party/forked/golang/reflect"
   ]
-  revision = "103fd098999dc9c0c88536f5c9ad2e5da39373ae"
+  revision = "6dd46049f39503a1fc8d65de4bd566829e95faff"
+
+[[projects]]
+  branch = "release-1.12"
+  name = "k8s.io/cli-runtime"
+  packages = [
+    "pkg/genericclioptions",
+    "pkg/genericclioptions/printers",
+    "pkg/genericclioptions/resource"
+  ]
+  revision = "660e75af03b1aa48d21dd7eaa221a8396a93b93e"
 
 [[projects]]
   name = "k8s.io/client-go"
@@ -335,10 +434,12 @@
     "kubernetes/typed/authorization/v1beta1",
     "kubernetes/typed/autoscaling/v1",
     "kubernetes/typed/autoscaling/v2beta1",
+    "kubernetes/typed/autoscaling/v2beta2",
     "kubernetes/typed/batch/v1",
     "kubernetes/typed/batch/v1beta1",
     "kubernetes/typed/batch/v2alpha1",
     "kubernetes/typed/certificates/v1beta1",
+    "kubernetes/typed/coordination/v1beta1",
     "kubernetes/typed/core/v1",
     "kubernetes/typed/events/v1beta1",
     "kubernetes/typed/extensions/v1beta1",
@@ -365,6 +466,7 @@
     "plugin/pkg/client/auth/openstack",
     "rest",
     "rest/watch",
+    "restmapper",
     "third_party/forked/golang/template",
     "tools/auth",
     "tools/clientcmd",
@@ -373,26 +475,33 @@
     "tools/clientcmd/api/v1",
     "tools/metrics",
     "tools/reference",
+    "tools/remotecommand",
     "transport",
+    "transport/spdy",
     "util/cert",
     "util/connrotation",
+    "util/exec",
     "util/flowcontrol",
     "util/homedir",
     "util/integer",
     "util/jsonpath"
   ]
-  revision = "7d04d0e2a0a1a4d4a1cd6baa432a2301492e4e65"
-  version = "v8.0.0"
+  revision = "1638f8970cefaa404ff3a62950f88b08292b2696"
+  version = "v9.0.0"
 
 [[projects]]
-  branch = "master"
-  name = "k8s.io/kubectl"
-  packages = ["pkg/pluginutils"]
-  revision = "b1cfa3113fbad39b4a36d2d45eff76af103591f4"
+  branch = "release-1.12"
+  name = "k8s.io/kubernetes"
+  packages = [
+    "pkg/kubectl/cmd/templates",
+    "pkg/kubectl/util/term",
+    "pkg/util/interrupt"
+  ]
+  revision = "b072a98e692dd690f8164fe43943bf7922aaccc1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cf4f539a33842631dd6a4efd3f9b204070daa5b754e632d7cc45bcbbd8c9e5e1"
+  inputs-digest = "c8e5ba0c561cf28808c00594b383238003386dcc892c6e5efb4abdef67e6d21f"
   solver-name = "gps-cdcl"
   solver-version = 1
