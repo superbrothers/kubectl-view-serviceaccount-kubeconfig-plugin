@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	clientcmd "k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
-	"k8s.io/kubernetes/pkg/kubectl/cmd/templates"
+	"k8s.io/kubernetes/pkg/kubectl/util/templates"
 	// Initialize all known client auth plugins.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 )
@@ -46,7 +46,7 @@ type ViewServiceaccountKubeconfigOptions struct {
 // ViewServiceaccountKubeconfig with default value
 func NewViewServiceaccountKubeconfigOptions(streams genericclioptions.IOStreams) *ViewServiceaccountKubeconfigOptions {
 	return &ViewServiceaccountKubeconfigOptions{
-		configFlags: genericclioptions.NewConfigFlags(),
+		configFlags: genericclioptions.NewConfigFlags(true),
 
 		IOStreams: streams,
 	}
@@ -80,7 +80,7 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 
 	o.configFlags.AddFlags(cmd.Flags())
 
-	// add the glog flags
+	// add the klog flags
 	cmd.PersistentFlags().AddGoFlagSet(flag.CommandLine)
 	// Workaround for this issue:
 	// https://github.com/kubernetes/kubernetes/issues/17162
