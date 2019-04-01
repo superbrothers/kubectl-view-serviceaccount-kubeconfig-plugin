@@ -37,7 +37,6 @@ $(OUT_DIR)/%-amd64/$(PLUGIN_NAME):
 $(DIST_DIR)/$(PLUGIN_NAME)-%-amd64.zip: $(OUT_DIR)/%-amd64/$(PLUGIN_NAME)
 		( \
 			cd $(OUT_DIR)/$*-amd64/ && \
-			cp ../../version.txt . && \
 			cp ../../LICENSE . && \
 			cp ../../README.md . && \
 			zip -r ../../$@ * \
