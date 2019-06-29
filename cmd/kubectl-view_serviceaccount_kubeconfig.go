@@ -8,10 +8,12 @@ import (
 	"github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/pkg/cmd"
 
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/klog"
 )
 
 func init() {
 	// Initialize glog flags
+	klog.InitFlags(flag.CommandLine)
 	flag.CommandLine.Set("logtostderr", "true")
 }
 
