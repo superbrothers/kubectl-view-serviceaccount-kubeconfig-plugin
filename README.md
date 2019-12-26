@@ -12,6 +12,9 @@ Examples:
   
   # Show a kubeconfig setting of serviceaccount/bot in namespace/kube-system
   kubectl view-serviceaccount-kubeconfig bot -n kube-system
+
+  # Show a kubeconfig setting of serviceaccount/default in JSON format
+  kubectl view-serviceaccount-kubeconfig default -o json
 ```
 
 ## Try the plugin

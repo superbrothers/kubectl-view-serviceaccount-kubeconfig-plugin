@@ -3,13 +3,15 @@ package cmd
 import (
 	"flag"
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/client-go/kubernetes"
-	clientcmd "k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
+	"k8s.io/client-go/tools/clientcmd/api/latest"
 	"k8s.io/kubectl/pkg/util/templates"
 
 	// Initialize all known client auth plugins.
@@ -30,6 +32,9 @@ kubectl view-serviceaccount-kubeconfig default
 
 # Show a kubeconfig setting of serviceaccount/bot in namespace/kube-system
 kubectl view-serviceaccount-kubeconfig bot -n kube-system
+
+# Show a kubeconfig setting of serviceaccount/default in JSON format
+kubectl view-serviceaccount-kubeconfig default -o json
 `)
 )
 
@@ -37,6 +42,8 @@ kubectl view-serviceaccount-kubeconfig bot -n kube-system
 // KUBECONFIG setting of serviceaccount
 type ViewServiceaccountKubeconfigOptions struct {
 	configFlags *genericclioptions.ConfigFlags
+	printFlags  *genericclioptions.PrintFlags
+	printObj    printers.ResourcePrinterFunc
 
 	args []string
 
@@ -48,6 +55,10 @@ type ViewServiceaccountKubeconfigOptions struct {
 func NewViewServiceaccountKubeconfigOptions(streams genericclioptions.IOStreams) *ViewServiceaccountKubeconfigOptions {
 	return &ViewServiceaccountKubeconfigOptions{
 		configFlags: genericclioptions.NewConfigFlags(true),
+		// disabled all output flags except yaml/json.
+		printFlags: (&genericclioptions.PrintFlags{
+			JSONYamlPrintFlags: genericclioptions.NewJSONYamlPrintFlags(),
+		}).WithDefaultOutput("yaml"),
 
 		IOStreams: streams,
 	}
@@ -79,6 +90,8 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 		},
 	}
 
+	cmd.Flags().StringVarP(o.printFlags.OutputFormat, "output", "o", *o.printFlags.OutputFormat, fmt.Sprintf("Output format. One of : %s.", strings.Join(o.printFlags.AllowedFormats(), "|")))
+
 	o.configFlags.AddFlags(cmd.Flags())
 
 	// add the klog flags
@@ -94,6 +107,12 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 // of serviceaccount
 func (o *ViewServiceaccountKubeconfigOptions) Complete(cmd *cobra.Command, args []string) error {
 	o.args = args
+
+	printer, err := o.printFlags.ToPrinter()
+	if err != nil {
+		return err
+	}
+	o.printObj = printer.PrintObj
 
 	return nil
 }
@@ -158,7 +177,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 	cluster := rawConfig.Contexts[context].Cluster
 	server := rawConfig.Clusters[cluster].Server
 
-	config := clientcmdapi.Config{
+	config := &clientcmdapi.Config{
 		CurrentContext: context,
 		Clusters: map[string]*clientcmdapi.Cluster{
 			cluster: &clientcmdapi.Cluster{
@@ -180,12 +199,10 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		},
 	}
 
-	data, err := clientcmd.Write(config)
+	convertedObj, err := latest.Scheme.ConvertToVersion(config, latest.ExternalVersion)
 	if err != nil {
-		return fmt.Errorf("Failed to serialize a kubeconfig to yaml: %v", err)
+		return err
 	}
 
-	fmt.Fprint(o.Out, string(data[:]))
-
-	return nil
+	return o.printObj(convertedObj, o.Out)
 }
