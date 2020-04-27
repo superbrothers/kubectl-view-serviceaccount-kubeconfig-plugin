@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"strings"
@@ -144,7 +145,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		return err
 	}
 
-	serviceaccount, err := client.CoreV1().ServiceAccounts(namespace).Get(serviceaccountName, metav1.GetOptions{})
+	serviceaccount, err := client.CoreV1().ServiceAccounts(namespace).Get(context.TODO(), serviceaccountName, metav1.GetOptions{})
 	if err != nil {
 		return fmt.Errorf("Failed to get a serviceaccount/%s in namespace/%s: %v", serviceaccountName, namespace, err)
 	}
@@ -153,7 +154,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		return fmt.Errorf("serviceaccount %s has no secrets", serviceaccount.GetName())
 	}
 
-	secret, err := client.CoreV1().Secrets(namespace).Get(serviceaccount.Secrets[0].Name, metav1.GetOptions{})
+	secret, err := client.CoreV1().Secrets(namespace).Get(context.TODO(), serviceaccount.Secrets[0].Name, metav1.GetOptions{})
 	if err != nil {
 		return fmt.Errorf("Failed to get a secret: %v", err)
 	}
@@ -173,14 +174,14 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		return fmt.Errorf("Failed to get current kubeconfig data")
 	}
 
-	context := rawConfig.CurrentContext
-	cluster := rawConfig.Contexts[context].Cluster
+	currentContext := rawConfig.CurrentContext
+	cluster := rawConfig.Contexts[currentContext].Cluster
 	server := rawConfig.Clusters[cluster].Server
 
 	config := &clientcmdapi.Config{
-		CurrentContext: context,
+		CurrentContext: currentContext,
 		Clusters: map[string]*clientcmdapi.Cluster{
-			cluster: &clientcmdapi.Cluster{
+			"cluster": &clientcmdapi.Cluster{
 				Server:                   server,
 				CertificateAuthorityData: caCrt,
 			},
@@ -191,7 +192,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 			},
 		},
 		Contexts: map[string]*clientcmdapi.Context{
-			context: &clientcmdapi.Context{
+			"context": &clientcmdapi.Context{
 				Cluster:   cluster,
 				AuthInfo:  serviceaccount.GetName(),
 				Namespace: namespace,
