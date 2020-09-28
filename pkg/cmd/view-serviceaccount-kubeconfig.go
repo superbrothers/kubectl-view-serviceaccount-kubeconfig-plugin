@@ -174,25 +174,30 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		return fmt.Errorf("Failed to get current kubeconfig data")
 	}
 
-	currentContext := rawConfig.CurrentContext
+	var currentContext string
+	if *o.configFlags.Context != "" {
+		currentContext = *o.configFlags.Context
+	} else {
+		currentContext = rawConfig.CurrentContext
+	}
 	cluster := rawConfig.Contexts[currentContext].Cluster
 	server := rawConfig.Clusters[cluster].Server
 
 	config := &clientcmdapi.Config{
 		CurrentContext: currentContext,
 		Clusters: map[string]*clientcmdapi.Cluster{
-			"cluster": &clientcmdapi.Cluster{
+			"cluster": {
 				Server:                   server,
 				CertificateAuthorityData: caCrt,
 			},
 		},
 		AuthInfos: map[string]*clientcmdapi.AuthInfo{
-			serviceaccount.GetName(): &clientcmdapi.AuthInfo{
+			serviceaccount.GetName(): {
 				Token: string(token[:]),
 			},
 		},
 		Contexts: map[string]*clientcmdapi.Context{
-			"context": &clientcmdapi.Context{
+			"context": {
 				Cluster:   cluster,
 				AuthInfo:  serviceaccount.GetName(),
 				Namespace: namespace,
