@@ -1,0 +1,28 @@
+project_name: kubectl-view_serviceaccount_kubeconfig
+env:
+- GO111MODULE=on
+- GOPROXY=https://gocenter.io
+builds:
+- main: ./cmd/kubectl-view_serviceaccount_kubeconfig.go
+  binary: kubectl-view_serviceaccount_kubeconfig
+  env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  - windows
+  - darwin
+  goarch:
+  - amd64
+  - arm
+  - arm64
+archives:
+- name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+  format: zip
+  files:
+  - LICENSE
+  - README.md
+  wrap_in_directory: false
+checksum:
+  name_template: 'checksums.txt'
+changelog:
+  sort: asc

@@ -1,0 +1,37 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: view-serviceaccount-kubeconfig
+spec:
+  platforms:
+  - {{addURIAndSha ""https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/{{ .TagName }}/kubectl-view_serviceaccount_kubeconfig-darwin-amd64.zip"" .TagName }}
+    bin: kubectl-view_serviceaccount_kubeconfig
+    files:
+    - from: "*"
+      to: .
+    selector:
+      matchLabels:
+        os: darwin
+        arch: amd64
+  - {{addURIAndSha "https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/{{ .TagName }}/kubectl-view_serviceaccount_kubeconfig-linux-amd64.zip" .TagName }}
+    bin: kubectl-view_serviceaccount_kubeconfig
+    files:
+    - from: "*"
+      to: .
+    selector:
+      matchLabels:
+        os: linux
+        arch: amd64
+  - {{addURIAndSha "https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/{{ .TagName }}/kubectl-view_serviceaccount_kubeconfig-windows-amd64.zip" .TagName }}
+    bin: kubectl-view_serviceaccount_kubeconfig.exe
+    files:
+    - from: "*"
+      to: .
+    selector:
+      matchLabels:
+        os: windows
+        arch: amd64
+  version: "{{ .TagName }}"
+  homepage: https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
+  shortDescription: Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+  description: Show a kubeconfig setting to access the apiserver with a specified serviceaccount.

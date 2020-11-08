@@ -1,65 +1,42 @@
-PLUGIN_NAME := kubectl-view_serviceaccount_kubeconfig
-OUT_DIR := ./_out
-OUTS := $(OUT_DIR)/linux-amd64/$(PLUGIN_NAME) \
-        $(OUT_DIR)/darwin-amd64/$(PLUGIN_NAME) \
-        $(OUT_DIR)/windows-amd64/$(PLUGIN_NAME).exe
-DIST_DIR := ./_dist
-DISTS := $(DIST_DIR)/$(PLUGIN_NAME)-linux-amd64.zip \
-         $(DIST_DIR)/$(PLUGIN_NAME)-darwin-amd64.zip \
-         $(DIST_DIR)/$(PLUGIN_NAME)-windows-amd64.zip
-CHECKSUMS := $(DISTS:.zip=.zip.sha256)
-
-GO := GO111MODULE=on go
-
-$(shell mkdir -p _dist)
+GO ?= GO111MODULE=on GOPROXY=https://gocenter.io go
+DIST_DIR := dist
 
 .PHONY: build
 build:
-		$(GO) build -o $(PLUGIN_NAME) cmd/$(PLUGIN_NAME).go
+	$(GO) build -o $(DIST_DIR)/kubectl-view_serviceaccount_kubeconfig cmd/kubectl-view_serviceaccount_kubeconfig.go
 
-build-cross: $(OUTS)
+TOOLS_DIR := hack/tools
+TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
+GORELEASER_BIN := bin/goreleaser
+GORELEASER := $(TOOLS_DIR)/$(GORELEASER_BIN)
+
+$(GORELEASER): $(TOOLS_DIR)/go.mod
+	cd $(TOOLS_DIR) && $(GO) build -o $(GORELEASER_BIN) github.com/goreleaser/goreleaser
+
+.PHONY: build-cross
+build-cross: $(GORELEASER)
+	$(GORELEASER) build --snapshot --rm-dist
 
 .PHONY: vet
 vet:
-		$(GO) vet -printfuncs Infof,Warningf,Errorf,Fatalf,Exitf ./pkg/... ./cmd/...
+	$(GO) vet ./...
 
 .PHONY: fmt
 fmt:
-		$(GO) fmt ./pkg/... ./cmd/...
+	$(GO) fmt ./...
 
-dist: $(DIST_DIR)/view-serviceaccount-kubeconfig.yaml
+.PHONY: test
+test:
+	$(GO) test -v ./...
 
-test-dist: dist
-		./hack/test-dist.sh
+.PHONY: dist
+dist: $(GORELEASER)
+	$(GORELEASER) release --rm-dist --skip-publish --snapshot
 
-$(OUT_DIR)/%-amd64/$(PLUGIN_NAME):
-		GOOS=$* GOARCH=amd64 $(GO) build -o $@ cmd/$(PLUGIN_NAME).go
-
-$(OUT_DIR)/windows-amd64/$(PLUGIN_NAME).exe:
-		GOOS=windows GOARCH=amd64 $(GO) build -o $@ cmd/$(PLUGIN_NAME).go
-
-$(DIST_DIR)/$(PLUGIN_NAME)-%-amd64.zip.sha256: $(DIST_DIR)/$(PLUGIN_NAME)-%-amd64.zip
-		shasum -a 256 "$^"  | awk '{print $$1}' > "$@"
-
-$(DIST_DIR)/$(PLUGIN_NAME)-%-amd64.zip: $(OUT_DIR)/%-amd64/$(PLUGIN_NAME)
-		( \
-			cd $(OUT_DIR)/$*-amd64/ && \
-			cp ../../LICENSE . && \
-			cp ../../README.md . && \
-			zip -r ../../$@ * \
-		)
-
-$(DIST_DIR)/$(PLUGIN_NAME)-windows-amd64.zip: $(OUT_DIR)/windows-amd64/$(PLUGIN_NAME).exe
-		( \
-			cd $(OUT_DIR)/windows-amd64/ && \
-			cp ../../LICENSE . && \
-			cp ../../README.md . && \
-			zip -r ../../$@ * \
-		)
-
-$(DIST_DIR)/view-serviceaccount-kubeconfig.yaml: $(DISTS) $(CHECKSUMS)
-		./hack/generate-plugin-yaml.sh >"$@"
+.PHONY: release
+release: $(GORELEASER)
+	$(GORELEASER) release --rm-dist
 
 .PHONY: clean
 clean:
-		rm -rf $(OUT_DIR) $(DIST_DIR) $(PLUGIN_NAME)
+	rm -rf $(DIST_DIR) $(TOOLS_BIN_DIR)
