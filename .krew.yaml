@@ -4,7 +4,7 @@ metadata:
   name: view-serviceaccount-kubeconfig
 spec:
   platforms:
-  - {{addURIAndSha ""https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/{{ .TagName }}/kubectl-view_serviceaccount_kubeconfig-darwin-amd64.zip"" .TagName }}
+  - {{addURIAndSha "https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin/releases/download/{{ .TagName }}/kubectl-view_serviceaccount_kubeconfig-darwin-amd64.zip" .TagName }}
     bin: kubectl-view_serviceaccount_kubeconfig
     files:
     - from: "*"
