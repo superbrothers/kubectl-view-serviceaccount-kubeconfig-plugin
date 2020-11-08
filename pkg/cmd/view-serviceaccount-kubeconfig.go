@@ -99,7 +99,7 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 	cmd.PersistentFlags().AddGoFlagSet(flag.CommandLine)
 	// Workaround for this issue:
 	// https://github.com/kubernetes/kubernetes/issues/17162
-	flag.CommandLine.Parse([]string{})
+	_ = flag.CommandLine.Parse([]string{})
 
 	return cmd
 }
