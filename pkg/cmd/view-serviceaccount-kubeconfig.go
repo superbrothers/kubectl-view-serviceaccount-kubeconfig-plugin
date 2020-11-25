@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
@@ -154,9 +155,20 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		return fmt.Errorf("serviceaccount %s has no secrets", serviceaccount.GetName())
 	}
 
-	secret, err := client.CoreV1().Secrets(namespace).Get(context.TODO(), serviceaccount.Secrets[0].Name, metav1.GetOptions{})
-	if err != nil {
-		return fmt.Errorf("Failed to get a secret: %v", err)
+	var secret *v1.Secret
+	for _, secretRef := range serviceaccount.Secrets {
+		secret, err = client.CoreV1().Secrets(namespace).Get(context.TODO(), secretRef.Name, metav1.GetOptions{})
+		if err != nil {
+			return fmt.Errorf("Failed to get a secret: %v", err)
+		}
+
+		if secret.Type == v1.SecretTypeServiceAccountToken {
+			break
+		}
+	}
+
+	if secret == nil {
+		return fmt.Errorf("serviceAccount %q has no secret type %q", serviceaccountName, v1.SecretTypeServiceAccountToken)
 	}
 
 	caCrt, ok := secret.Data["ca.crt"]
