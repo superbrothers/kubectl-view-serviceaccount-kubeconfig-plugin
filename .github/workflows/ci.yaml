@@ -27,5 +27,10 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - run: make lint
+    - run: make vet fmt lint
     - run: make dist
+    - uses: superbrothers/actions/krew-plugin-test@master
+      with:
+        archive: dist/kubectl-view_serviceaccount_kubeconfig-linux-amd64.zip
+        manifest: dist/view-serviceaccount-kubeconfig.yaml
+        command: kubectl view-serviceaccount-kubeconfig --help
