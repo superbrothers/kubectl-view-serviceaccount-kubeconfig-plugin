@@ -1,7 +1,4 @@
 project_name: kubectl-view_serviceaccount_kubeconfig
-env:
-- GO111MODULE=on
-- GOPROXY=https://gocenter.io
 builds:
 - main: ./cmd/kubectl-view_serviceaccount_kubeconfig.go
   binary: kubectl-view_serviceaccount_kubeconfig
