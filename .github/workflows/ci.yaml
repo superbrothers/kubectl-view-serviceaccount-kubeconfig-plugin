@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
       with:
-        go-version: 1.16.x
+        go-version: 1.17.x
     - name: Ensure go.mod is already tidied
       run: |
         go mod tidy
@@ -29,8 +29,4 @@ jobs:
           ${{ runner.os }}-go-
     - run: make vet fmt lint
     - run: make dist
-    - uses: superbrothers/actions/krew-plugin-test@master
-      with:
-        archive: dist/kubectl-view_serviceaccount_kubeconfig-linux-amd64.zip
-        manifest: dist/view-serviceaccount-kubeconfig.yaml
-        command: kubectl view-serviceaccount-kubeconfig --help
+    - run: make validate-krew-manifest
