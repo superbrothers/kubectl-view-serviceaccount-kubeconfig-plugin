@@ -22,4 +22,10 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 changelog:
-  sort: asc
+  skip: true
+krews:
+- name: view-serviceaccount-kubeconfig
+  homepage: https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
+  short_description: Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+  description: Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+  skip_upload: true

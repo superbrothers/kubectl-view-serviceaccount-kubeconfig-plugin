@@ -18,16 +18,12 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - run: make dist
+    - run: make release
     - uses: softprops/action-gh-release@v1
       with:
         files: dist/!(config.yaml)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - uses: superbrothers/actions/krew-plugin-release@master
+    - uses: rajatjindal/krew-release-bot@v0.0.40
       with:
-        token: ${{ secrets.PAT }}
-        plugin_name: view-serviceaccount-kubeconfig
-        manifest_path: dist/view-serviceaccount-kubeconfig.yaml 
-        git_author_name: Kazuki Suda
-        git_author_email: kazuki.suda@gmail.com
+        krew_template_file: dist/view-serviceaccount-kubeconfig.yaml
