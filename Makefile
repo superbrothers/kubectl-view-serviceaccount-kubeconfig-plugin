@@ -12,8 +12,6 @@ GORELEASER_BIN := bin/goreleaser
 GORELEASER := $(TOOLS_DIR)/$(GORELEASER_BIN)
 GOLANGCI_LINT_BIN := bin/golangci-lint
 GOLANGCI_LINT := $(TOOLS_DIR)/$(GOLANGCI_LINT_BIN)
-GOMPLATE_BIN := bin/gomplate
-GOMPLATE := $(TOOLS_DIR)/$(GOMPLATE_BIN)
 VALIDATE_KREW_MAIFEST_BIN := bin/validate-krew-manifest
 VALIDATE_KREW_MAIFEST := $(TOOLS_DIR)/$(VALIDATE_KREW_MAIFEST_BIN)
 
@@ -22,9 +20,6 @@ $(GORELEASER): $(TOOLS_DIR)/go.mod
 
 $(GOLANGCI_LINT): $(TOOLS_DIR)/go.mod
 	cd $(TOOLS_DIR) && $(GO) build -o $(GOLANGCI_LINT_BIN) github.com/golangci/golangci-lint/cmd/golangci-lint
-
-$(GOMPLATE): $(TOOLS_DIR)/go.mod
-	cd $(TOOLS_DIR) && $(GO) build -o $(GOMPLATE_BIN) github.com/hairyhenderson/gomplate/v3/cmd/gomplate
 
 $(VALIDATE_KREW_MAIFEST): $(TOOLS_DIR)/go.mod
 	cd $(TOOLS_DIR) && $(GO) build -o $(VALIDATE_KREW_MAIFEST_BIN) sigs.k8s.io/krew/cmd/validate-krew-manifest
@@ -50,9 +45,12 @@ validate-krew-manifest: $(VALIDATE_KREW_MAIFEST)
 	$(VALIDATE_KREW_MAIFEST) -manifest dist/view-serviceaccount-kubeconfig.yaml -skip-install
 
 .PHONY: dist
-dist: $(GORELEASER) $(GOMPLATE)
+dist: $(GORELEASER)
 	$(GORELEASER) release --rm-dist --skip-publish --snapshot
-	GIT_VERSION=$(GIT_VERSION) $(GOMPLATE) -f ./hack/view-serviceaccount-kubeconfig.yaml.tmpl > $(DIST_DIR)/view-serviceaccount-kubeconfig.yaml
+
+.PHONY: release
+release: $(GORELEASER)
+	$(GORELEASER) release --rm-dist --skip-publish
 
 .PHONY: clean
 clean:
