@@ -1,6 +1,6 @@
 module github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
 
-go 1.17
+go 1.18
 
 require (
 	github.com/spf13/cobra v1.3.0
