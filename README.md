@@ -1,32 +1,39 @@
 # kubectl plugin view-serviceaccount-kubeconfig SERVICEACCOUNT
 
-This is a kubectl plugin that show a kubeconfig to access the apiserver with a specified serviceaccount.
+This is a kubectl plugin that show a kubeconfig to access the kube-apiserver with a specified serviceaccount.
+
+:warning: In Kubernetes 1.24+, secret-based tokens are no longer auto-created by default for new service accounts. You can use this plugin with `--type request-token` flag to create a new token instead of using the existing secret-based token. See https://kubernetes.io/docs/concepts/configuration/secret/#service-account-token-secrets for more details about the service account token.
 
 ```
 Usage:
   kubectl view-serviceaccount-kubeconfig SERVICEACCOUNT [options] [flags]
 
 Examples:
-  # Show a kubeconfig setting of serviceaccount/default
-  kubectl view-serviceaccount-kubeconfig default
-  
-  # Show a kubeconfig setting of serviceaccount/bot in namespace/kube-system
-  kubectl view-serviceaccount-kubeconfig bot -n kube-system
+  # Show a kubeconfig setting of the service account "myapp" in the current namespace
+  kubectl view-serviceaccount-kubeconfig myapp
 
-  # Show a kubeconfig setting of serviceaccount/default in JSON format
-  kubectl view-serviceaccount-kubeconfig default -o json
+  # Show a kubeconfig setting of a service account in a custom namespace
+  kubectl view-serviceaccount-kubeconfig myapp --namespace myns
+
+  # Request a bound token to authenticate to the kube-apiserver as the service account
+  # "myapp" in the current namespace and show it as a kubeconfig setting
+  kubectl view-serviceaccount-kubeconfig myapp --type request-token
+
+  # Request a bound token with a custom expiration and show it as a kubeconfig setting
+  kubectl view-serviceaccount-kubeconfig myapp --type request-token --duration 10m
 ```
 
 ## Try the plugin
 
 ```
-# create a serviceaccount/bot in namepace/default
-$ kubectl create serviceaccount bot
+# Create a service account "myapp"  in the current namespace
+$ kubectl create serviceaccount myapp
 
-# save a kubeconfig setting of serviceaccount/bot
-$ kubectl view-serviceaccount-kubeconfig bot > ./kubeconfig
+# Create a bount token of the service account "myapp" with a custom expiration
+# and save it as a kubeconfig file
+$ kubectl view-serviceaccount-kubeconfig myapp --request-token --duration 10d > ./kubeconfig
 
-# list pods as serviceaccount/bot from outside of kubernetes cluster
+# List pods by the operation of the service account "myapp"
 $ kubectl get pods --kubeconfig=./kubeconfig
 ```
 
