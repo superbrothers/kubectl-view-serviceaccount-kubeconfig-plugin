@@ -43,6 +43,10 @@ fmt:
 lint: vet fmt $(GOLANGCI_LINT)
 	$(GOLANGCI_LINT) run
 
+.PHONY: test
+test:
+	$(GO) test -v ./...
+
 .PHONY: validate-krew-manifest
 validate-krew-manifest: $(VALIDATE_KREW_MAIFEST)
 	$(VALIDATE_KREW_MAIFEST) -manifest dist/view-serviceaccount-kubeconfig.yaml -skip-install

@@ -4,11 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/spf13/cobra"
-	v1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/cli-runtime/pkg/printers"
 	"k8s.io/client-go/kubernetes"
@@ -22,21 +21,31 @@ import (
 
 var (
 	viewServiceaccountKubeconfigLong = templates.LongDesc(`
-Show a kubeconfig setting to access the apiserver with a specified serviceaccount.
+Show a kubeconfig setting for serviceaccount from bound token or secret-based token.
 
-The kubeconfig setting will reference the serviceaccount token and use the
-current server and namespace
+Note that in Kubernetes 1.24+, secret-based tokens are no longer auto-created
+by default for new service accounts. Using bound tokens created by "kubectl
+create token" command to access the Kubernetes API is recommended instead.
 `)
 
 	viewServiceaccountKubeconfigExample = templates.Examples(`
-# Show a kubeconfig setting of serviceaccount/default
+# Show a kubeconfig setting using bound token for serviceaccount/myapp in the current namespace
+kubectl create token myapp | kubectl view-serviceaccount-kubeconfig
+
+# Show a kubeconfig setting using bound token for a serviceaccount in a custom namspcae
+kubectl create token myapp --namespace myns | kubectl view-serviceaccount-kubeconfig
+
+# Show a kubeconfig setting using bound token with a custom expiration
+kubectl create token myapp --duration 10m | kubectl view-serviceaccount-kubeconfig
+
+# Show a kubeconfig setting using bound token in JSON format
+kubectl create token myapp | kubectl view-serviceaccount-kubeconfig --output json
+
+# Show a kubeconfig setting using secret-based token for serviceaccount/myapp in the current namespace
 kubectl view-serviceaccount-kubeconfig default
 
-# Show a kubeconfig setting of serviceaccount/bot in namespace/kube-system
+# Show a kubeconfig setting using secret-based token for serviceaccount/bot in namespace/kube-system
 kubectl view-serviceaccount-kubeconfig bot -n kube-system
-
-# Show a kubeconfig setting of serviceaccount/default in JSON format
-kubectl view-serviceaccount-kubeconfig default -o json
 `)
 )
 
@@ -47,7 +56,7 @@ type ViewServiceaccountKubeconfigOptions struct {
 	printFlags  *genericclioptions.PrintFlags
 	printObj    printers.ResourcePrinterFunc
 
-	args []string
+	serviceaccountName string
 
 	genericclioptions.IOStreams
 }
@@ -72,12 +81,12 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 	o := NewViewServiceaccountKubeconfigOptions(streams)
 
 	cmd := &cobra.Command{
-		Use:     "kubectl view-serviceaccount-kubeconfig SERVICEACCOUNT [options]",
-		Short:   "Show a kubeconfig setting to access the apiserver with a specified serviceaccount.",
+		Use:     "kubectl view-serviceaccount-kubeconfig [SERVICEACCOUNT] [options]",
+		Short:   "Show a kubeconfig setting for serviceaccount from bound token or secret-based token.",
 		Long:    viewServiceaccountKubeconfigLong,
 		Example: viewServiceaccountKubeconfigExample,
 		RunE: func(c *cobra.Command, args []string) error {
-			if err := o.Complete(c, args); err != nil {
+			if err := o.Complete(args); err != nil {
 				return err
 			}
 			if err := o.Validate(); err != nil {
@@ -107,8 +116,14 @@ func NewCmdViewServiceaccountKubeconfig(streams genericclioptions.IOStreams) *co
 
 // Complete sets all information required for showing the KUBECONFIG setting
 // of serviceaccount
-func (o *ViewServiceaccountKubeconfigOptions) Complete(cmd *cobra.Command, args []string) error {
-	o.args = args
+func (o *ViewServiceaccountKubeconfigOptions) Complete(args []string) error {
+	if len(args) > 1 {
+		return fmt.Errorf("exactly one SERVICEACCOUT is required, got %d", len(args))
+	}
+
+	if len(args) > 0 {
+		o.serviceaccountName = args[0]
+	}
 
 	printer, err := o.printFlags.ToPrinter()
 	if err != nil {
@@ -121,65 +136,13 @@ func (o *ViewServiceaccountKubeconfigOptions) Complete(cmd *cobra.Command, args 
 
 // Validate ensures that all required arguments and flag values are provided
 func (o *ViewServiceaccountKubeconfigOptions) Validate() error {
-	if len(o.args) != 1 {
-		return fmt.Errorf("exactly one SERVICEACCOUT is required, got %d", len(o.args))
-	}
-
 	return nil
 }
 
 // Run shows a kubeconfig to access the apiserver with a specified
 // serviceaccount
 func (o *ViewServiceaccountKubeconfigOptions) Run() error {
-	serviceaccountName := o.args[0]
-
-	restConfig, err := o.configFlags.ToRESTConfig()
-	if err != nil {
-		return err
-	}
-
 	kubeConfig := o.configFlags.ToRawKubeConfigLoader()
-
-	client := kubernetes.NewForConfigOrDie(restConfig)
-	namespace, _, err := kubeConfig.Namespace()
-	if err != nil {
-		return err
-	}
-
-	serviceaccount, err := client.CoreV1().ServiceAccounts(namespace).Get(context.TODO(), serviceaccountName, metav1.GetOptions{})
-	if err != nil {
-		return fmt.Errorf("Failed to get a serviceaccount/%s in namespace/%s: %v", serviceaccountName, namespace, err)
-	}
-
-	if len(serviceaccount.Secrets) < 1 {
-		return fmt.Errorf("serviceaccount %s has no secrets", serviceaccount.GetName())
-	}
-
-	var secret *v1.Secret
-	for _, secretRef := range serviceaccount.Secrets {
-		secret, err = client.CoreV1().Secrets(namespace).Get(context.TODO(), secretRef.Name, metav1.GetOptions{})
-		if err != nil {
-			return fmt.Errorf("Failed to get a secret: %v", err)
-		}
-
-		if secret.Type == v1.SecretTypeServiceAccountToken {
-			break
-		}
-	}
-
-	if secret == nil {
-		return fmt.Errorf("serviceAccount %q has no secret type %q", serviceaccountName, v1.SecretTypeServiceAccountToken)
-	}
-
-	caCrt, ok := secret.Data["ca.crt"]
-	if !ok {
-		return fmt.Errorf("key 'ca.crt' not found in %s", secret.GetName())
-	}
-
-	token, ok := secret.Data["token"]
-	if !ok {
-		return fmt.Errorf("key 'token' not found in %s", secret.GetName())
-	}
 
 	rawConfig, err := kubeConfig.RawConfig()
 	if err != nil {
@@ -192,8 +155,55 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 	} else {
 		currentContext = rawConfig.CurrentContext
 	}
+
 	cluster := rawConfig.Contexts[currentContext].Cluster
 	server := rawConfig.Clusters[cluster].Server
+
+	var (
+		serviceaccountName string
+		namespace          string
+		token              string
+		caCrt              []byte
+	)
+
+	// We expect the serviceaccount bound token can be read from the stdin
+	// if no arguments is specified.
+	if o.serviceaccountName == "" {
+		tokenData, err := io.ReadAll(o.IOStreams.In)
+		if err != nil {
+			return err
+		}
+		token = string(tokenData)
+
+		namespacedName, err := getServiceAccountNamespacedNameFromBoundToken(token)
+		if err != nil {
+			return err
+		}
+
+		namespace = namespacedName.Namespace
+		serviceaccountName = namespacedName.Name
+
+		// We get CA certificate data from the kubeconfig file
+		caCrt = rawConfig.Clusters[cluster].CertificateAuthorityData
+	} else {
+		restConfig, err := o.configFlags.ToRESTConfig()
+		if err != nil {
+			return err
+		}
+
+		client := kubernetes.NewForConfigOrDie(restConfig)
+
+		serviceaccountName = o.serviceaccountName
+		namespace, _, err = kubeConfig.Namespace()
+		if err != nil {
+			return err
+		}
+
+		token, caCrt, err = getTokenFromServiceAccountSecret(context.Background(), client, namespace, serviceaccountName)
+		if err != nil {
+			return err
+		}
+	}
 
 	config := &clientcmdapi.Config{
 		CurrentContext: currentContext,
@@ -204,14 +214,14 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 			},
 		},
 		AuthInfos: map[string]*clientcmdapi.AuthInfo{
-			serviceaccount.GetName(): {
-				Token: string(token[:]),
+			serviceaccountName: {
+				Token: token,
 			},
 		},
 		Contexts: map[string]*clientcmdapi.Context{
 			currentContext: {
 				Cluster:   cluster,
-				AuthInfo:  serviceaccount.GetName(),
+				AuthInfo:  serviceaccountName,
 				Namespace: namespace,
 			},
 		},
