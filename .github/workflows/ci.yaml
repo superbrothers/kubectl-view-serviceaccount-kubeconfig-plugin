@@ -19,8 +19,7 @@ jobs:
     - name: Ensure go.mod is already tidied
       run: |
         go mod tidy
-        (cd hack/tools && go mod tidy)
-        git diff -s --exit-code go.sum hack/tools/go.sum
+        git diff -s --exit-code go.sum
     - uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod

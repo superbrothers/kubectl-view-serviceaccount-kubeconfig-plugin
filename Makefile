@@ -1,35 +1,30 @@
 GO ?= go
 DIST_DIR := dist
-GIT_VERSION ?= $(shell ./hack/git-version.sh)
 
 .PHONY: build
 build:
 	$(GO) build -o $(DIST_DIR)/kubectl-view_serviceaccount_kubeconfig cmd/kubectl-view_serviceaccount_kubeconfig.go
 
-TOOLS_DIR := hack/tools
-TOOLS_BIN_DIR := $(TOOLS_DIR)/bin
-$(shell mkdir -p $(TOOLS_BIN_DIR))
-
-GORELEASER_BIN := bin/goreleaser
-GORELEASER := $(TOOLS_DIR)/$(GORELEASER_BIN)
-GORELEASER_VERSION ?= v1.8.3
-GOLANGCI_LINT_BIN := bin/golangci-lint
-GOLANGCI_LINT := $(TOOLS_DIR)/$(GOLANGCI_LINT_BIN)
-VALIDATE_KREW_MAIFEST_BIN := bin/validate-krew-manifest
-VALIDATE_KREW_MAIFEST := $(TOOLS_DIR)/$(VALIDATE_KREW_MAIFEST_BIN)
+TOOLS_BIN_DIR := $(CURDIR)/hack/tools/bin
+GORELEASER_VERSION ?= v1.17.0
+GORELEASER := $(TOOLS_BIN_DIR)/goreleaser
+GOLANGCI_LINT_VERSION ?= v1.52.2
+GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
+VALIDATE_KREW_MAIFEST_VERSION ?= v0.4.3
+VALIDATE_KREW_MAIFEST := $(TOOLS_BIN_DIR)/validate-krew-manifest
 
 $(GORELEASER):
-	curl -SL "https://github.com/goreleaser/goreleaser/releases/download/v1.8.3/goreleaser_$(shell uname -s)_$(shell uname -m).tar.gz" | tar xz -C $(TOOLS_BIN_DIR) goreleaser
+	GOBIN=$(TOOLS_BIN_DIR) go install github.com/goreleaser/goreleaser@$(GORELEASER_VERSION)
 
-$(GOLANGCI_LINT): $(TOOLS_DIR)/go.mod
-	cd $(TOOLS_DIR) && $(GO) build -o $(GOLANGCI_LINT_BIN) github.com/golangci/golangci-lint/cmd/golangci-lint
+$(GOLANGCI_LINT):
+	GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
 
-$(VALIDATE_KREW_MAIFEST): $(TOOLS_DIR)/go.mod
-	cd $(TOOLS_DIR) && $(GO) build -o $(VALIDATE_KREW_MAIFEST_BIN) sigs.k8s.io/krew/cmd/validate-krew-manifest
+$(VALIDATE_KREW_MAIFEST):
+	GOBIN=$(TOOLS_BIN_DIR) go install sigs.k8s.io/krew/cmd/validate-krew-manifest@$(VALIDATE_KREW_MAIFEST_VERSION)
 
 .PHONY: build-cross
 build-cross: $(GORELEASER)
-	$(GORELEASER) build --snapshot --rm-dist
+	$(GORELEASER) build --snapshot --clean
 
 .PHONY: vet
 vet:
@@ -53,11 +48,11 @@ validate-krew-manifest: $(VALIDATE_KREW_MAIFEST)
 
 .PHONY: dist
 dist: $(GORELEASER)
-	$(GORELEASER) release --rm-dist --skip-publish --snapshot
+	$(GORELEASER) release --clean --skip-publish --snapshot
 
 .PHONY: release
 release: $(GORELEASER)
-	$(GORELEASER) release --rm-dist --skip-publish
+	$(GORELEASER) release --clean --skip-publish
 
 .PHONY: clean
 clean:
