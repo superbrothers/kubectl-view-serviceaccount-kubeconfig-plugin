@@ -6,11 +6,11 @@ build:
 	$(GO) build -o $(DIST_DIR)/kubectl-view_serviceaccount_kubeconfig cmd/kubectl-view_serviceaccount_kubeconfig.go
 
 TOOLS_BIN_DIR := $(CURDIR)/hack/tools/bin
-GORELEASER_VERSION ?= v1.17.0
+GORELEASER_VERSION ?= v1.20.0
 GORELEASER := $(TOOLS_BIN_DIR)/goreleaser
-GOLANGCI_LINT_VERSION ?= v1.52.2
+GOLANGCI_LINT_VERSION ?= v1.54.2
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
-VALIDATE_KREW_MAIFEST_VERSION ?= v0.4.3
+VALIDATE_KREW_MAIFEST_VERSION ?= v0.4.4
 VALIDATE_KREW_MAIFEST := $(TOOLS_BIN_DIR)/validate-krew-manifest
 GORELEASER_FILTER_VERSION ?= v0.3.0
 GORELEASER_FILTER := $(TOOLS_BIN_DIR)/goreleaser-filter
@@ -45,7 +45,7 @@ test:
 
 .PHONY: validate-krew-manifest
 validate-krew-manifest: $(VALIDATE_KREW_MAIFEST)
-	$(VALIDATE_KREW_MAIFEST) -manifest dist/view-serviceaccount-kubeconfig.yaml -skip-install
+	$(VALIDATE_KREW_MAIFEST) -manifest dist/krew/view-serviceaccount-kubeconfig.yaml -skip-install
 
 .PHONY: dist
 dist: $(GORELEASER) $(GORELEASER_FILTER)
