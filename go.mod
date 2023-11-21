@@ -3,7 +3,7 @@ module github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
 go 1.21
 
 require (
-	github.com/go-jose/go-jose/v3 v3.0.0
+	github.com/go-jose/go-jose/v3 v3.0.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.28.1
