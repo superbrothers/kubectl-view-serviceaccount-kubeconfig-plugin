@@ -11,25 +11,47 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func getTokenFromServiceAccountSecret(ctx context.Context, client *kubernetes.Clientset, namespace, serviceaccountName string) (string, []byte, error) {
+func getTokenForServiceAccount(ctx context.Context, client *kubernetes.Clientset, namespace, serviceaccountName string) (string, []byte, error) {
 	serviceaccount, err := client.CoreV1().ServiceAccounts(namespace).Get(ctx, serviceaccountName, metav1.GetOptions{})
 	if err != nil {
 		return "", nil, fmt.Errorf("Failed to get serviceaccount %s/%s: %v", namespace, serviceaccountName, err)
 	}
 
-	if len(serviceaccount.Secrets) < 1 {
+	var serviceAccountSecrets []v1.ObjectReference
+
+	if len(serviceaccount.Secrets) > 0 {
+		serviceAccountSecrets = serviceaccount.Secrets
+	} else {
+		secrets, err := client.CoreV1().Secrets(namespace).List(ctx, metav1.ListOptions{})
+		if err != nil {
+			return "", nil, fmt.Errorf("failed to list secrets: %v", err)
+		}
+
+		for _, secret := range secrets.Items {
+			if secret.Annotations["kubernetes.io/service-account.uid"] == string(serviceaccount.UID) {
+				serviceAccountSecrets = append(serviceAccountSecrets, v1.ObjectReference{Name: secret.Name})
+				break
+			}
+		}
+	}
+
+	if len(serviceAccountSecrets) < 1 {
 		return "", nil, fmt.Errorf(`"serviceaccount %s/%s has no secrets.
 
 In Kubernetes 1.24+, secret-based tokens are no longer auto-created
 by default for new service accounts. Using bound tokens created by "kubectl
 create token" command to access the Kubernetes API is recommended instead.
 
+Alternatively, you can attach a long-lived token to the service account;
+see https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#create-token
+for more information.
+
 Check the help message of this command to see how to show the kubeconfig
 setting with a bound token.`, namespace, serviceaccountName)
 	}
 
 	var secret *v1.Secret
-	for _, secretRef := range serviceaccount.Secrets {
+	for _, secretRef := range serviceAccountSecrets {
 		secret, err = client.CoreV1().Secrets(namespace).Get(ctx, secretRef.Name, metav1.GetOptions{})
 		if err != nil {
 			return "", nil, fmt.Errorf("Failed to get a secret: %v", err)

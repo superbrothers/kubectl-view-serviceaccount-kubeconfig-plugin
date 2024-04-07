@@ -199,7 +199,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 			return err
 		}
 
-		token, caCrt, err = getTokenFromServiceAccountSecret(context.Background(), client, namespace, serviceaccountName)
+		token, caCrt, err = getTokenForServiceAccount(context.Background(), client, namespace, serviceaccountName)
 		if err != nil {
 			return err
 		}
