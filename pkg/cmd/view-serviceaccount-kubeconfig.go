@@ -156,8 +156,17 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 		currentContext = rawConfig.CurrentContext
 	}
 
-	cluster := rawConfig.Contexts[currentContext].Cluster
-	server := rawConfig.Clusters[cluster].Server
+	clusterCtx, ok := rawConfig.Contexts[currentContext]
+	if !ok || clusterCtx == nil {
+		return fmt.Errorf("no cluster found for context %q", currentContext)
+	}
+	cluster := clusterCtx.Cluster
+
+	clusterConfig, ok := rawConfig.Clusters[cluster]
+	if !ok || clusterConfig == nil {
+		return fmt.Errorf("no config found for cluster %q", cluster)
+	}
+	server := clusterConfig.Server
 
 	var (
 		serviceaccountName string
