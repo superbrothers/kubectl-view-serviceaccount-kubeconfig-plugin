@@ -14,7 +14,7 @@ import (
 func getTokenForServiceAccount(ctx context.Context, client *kubernetes.Clientset, namespace, serviceaccountName string) (string, []byte, error) {
 	serviceaccount, err := client.CoreV1().ServiceAccounts(namespace).Get(ctx, serviceaccountName, metav1.GetOptions{})
 	if err != nil {
-		return "", nil, fmt.Errorf("Failed to get serviceaccount %s/%s: %v", namespace, serviceaccountName, err)
+		return "", nil, fmt.Errorf("failed to get serviceaccount %s/%s: %v", namespace, serviceaccountName, err)
 	}
 
 	var serviceAccountSecrets []v1.ObjectReference
@@ -36,7 +36,7 @@ func getTokenForServiceAccount(ctx context.Context, client *kubernetes.Clientset
 	}
 
 	if len(serviceAccountSecrets) < 1 {
-		return "", nil, fmt.Errorf(`"serviceaccount %s/%s has no secrets.
+		return "", nil, fmt.Errorf(`serviceaccount %s/%s has no secrets
 
 In Kubernetes 1.24+, secret-based tokens are no longer auto-created
 by default for new service accounts. Using bound tokens created by "kubectl
@@ -47,14 +47,14 @@ see https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-adm
 for more information.
 
 Check the help message of this command to see how to show the kubeconfig
-setting with a bound token.`, namespace, serviceaccountName)
+setting with a bound token`, namespace, serviceaccountName)
 	}
 
 	var secret *v1.Secret
 	for _, secretRef := range serviceAccountSecrets {
 		secret, err = client.CoreV1().Secrets(namespace).Get(ctx, secretRef.Name, metav1.GetOptions{})
 		if err != nil {
-			return "", nil, fmt.Errorf("Failed to get a secret: %v", err)
+			return "", nil, fmt.Errorf("failed to get a secret: %v", err)
 		}
 
 		if secret.Type == v1.SecretTypeServiceAccountToken {
