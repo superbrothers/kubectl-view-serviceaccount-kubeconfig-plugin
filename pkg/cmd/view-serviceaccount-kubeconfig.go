@@ -146,7 +146,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 
 	rawConfig, err := kubeConfig.RawConfig()
 	if err != nil {
-		return fmt.Errorf("Failed to get current kubeconfig data")
+		return fmt.Errorf("failed to get current kubeconfig data")
 	}
 
 	var currentContext string
@@ -169,7 +169,7 @@ func (o *ViewServiceaccountKubeconfigOptions) Run() error {
 	// We expect the serviceaccount bound token can be read from the stdin
 	// if no arguments is specified.
 	if o.serviceaccountName == "" {
-		tokenData, err := io.ReadAll(o.IOStreams.In)
+		tokenData, err := io.ReadAll(o.In)
 		if err != nil {
 			return err
 		}

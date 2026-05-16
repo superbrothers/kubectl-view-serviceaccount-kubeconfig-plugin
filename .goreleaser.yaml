@@ -1,3 +1,4 @@
+version: 2
 project_name: kubectl-view_serviceaccount_kubeconfig
 builds:
 - main: ./cmd/kubectl-view_serviceaccount_kubeconfig.go
@@ -14,7 +15,7 @@ builds:
   - arm64
 archives:
 - name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
-  format: zip
+  formats: ["zip"]
   files:
   - LICENSE
   - README.md
@@ -22,7 +23,7 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 changelog:
-  skip: true
+  disable: true
 krews:
 - name: view-serviceaccount-kubeconfig
   homepage: https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
