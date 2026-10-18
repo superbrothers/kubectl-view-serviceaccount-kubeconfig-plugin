@@ -6,9 +6,9 @@ build:
 	$(GO) build -o $(DIST_DIR)/kubectl-view_serviceaccount_kubeconfig cmd/kubectl-view_serviceaccount_kubeconfig.go
 
 TOOLS_BIN_DIR := $(CURDIR)/hack/tools/bin
-GORELEASER_VERSION ?= v2.15.4
+GORELEASER_VERSION ?= v2.18.3
 GORELEASER := $(TOOLS_BIN_DIR)/goreleaser
-GOLANGCI_LINT_VERSION ?= v2.12.2
+GOLANGCI_LINT_VERSION ?= v2.15.0
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/golangci-lint
 VALIDATE_KREW_MAIFEST_VERSION ?= v0.5.0
 VALIDATE_KREW_MAIFEST := $(TOOLS_BIN_DIR)/validate-krew-manifest
