@@ -53,11 +53,11 @@ dist: $(GORELEASER) $(GORELEASER_FILTER)
 
 .PHONY: dist-all
 dist-all: $(GORELEASER)
-	$(GORELEASER) release --clean --skip-publish --snapshot
+	$(GORELEASER) release --clean --skip=publish --snapshot
 
 .PHONY: release
 release: $(GORELEASER)
-	$(GORELEASER) release --clean --skip-publish
+	$(GORELEASER) release --clean --skip=publish
 
 .PHONY: clean
 clean:
